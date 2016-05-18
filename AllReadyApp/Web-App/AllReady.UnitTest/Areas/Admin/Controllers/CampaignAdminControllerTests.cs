@@ -223,15 +223,21 @@ namespace AllReady.UnitTest.Areas.Admin.Controllers
                 It.Is<IFormFile>(i => i == file)), Times.Once);
         }
 
-        [Fact(Skip = "NotImplemented")]
+        [Fact]
         public void EditPostHasHttpPostAttribute()
         {
-        }
+	        var controller = new CampaignController(null, null);
+			var attribute = controller.GetAttributesOn(x => x.Edit(It.IsAny<CampaignSummaryModel>(), It.IsAny<IFormFile>())).OfType<HttpPostAttribute>().SingleOrDefault();
+			Assert.NotNull(attribute);
+		}
 
-        [Fact(Skip = "NotImplemented")]
+        [Fact]
         public void EditPostHasValidateAntiForgeryTokenttribute()
         {
-        }
+			var controller = new CampaignController(null, null);
+			var attribute = controller.GetAttributesOn(x => x.Edit(It.IsAny<CampaignSummaryModel>(), It.IsAny<IFormFile>())).OfType<ValidateAntiForgeryTokenAttribute>().SingleOrDefault();
+			Assert.NotNull(attribute);
+		}
 
         [Fact(Skip = "NotImplemented")]
         public async Task DeleteSendsCampaignSummaryQueryWithCorrectCampaignId()
@@ -331,20 +337,30 @@ namespace AllReady.UnitTest.Areas.Admin.Controllers
             Assert.Equal(result.RouteValues, routeValues);
         }
 
-        [Fact(Skip = "NotImplemented")]
+        [Fact]
         public void DeleteConfirmedHasHttpPostAttribute()
         {
-        }
+			var controller = new CampaignController(null, null);
+			var attribute = controller.GetAttributesOn(x => x.DeleteConfirmed(It.IsAny<int>())).OfType<HttpPostAttribute>().SingleOrDefault();
+			Assert.NotNull(attribute);
+		}
 
-        [Fact(Skip = "NotImplemented")]
+        [Fact]
         public void DeleteConfirmedHasActionNameAttributeWithCorrectName()
         {
-        }
+			var controller = new CampaignController(null, null);
+			var attribute = controller.GetAttributesOn(x => x.DeleteConfirmed(It.IsAny<int>())).OfType<ActionNameAttribute>().SingleOrDefault();
+			Assert.NotNull(attribute);
+			Assert.Equal("Delete", attribute.Name);
+		}
 
-        [Fact(Skip = "NotImplemented")]
+        [Fact]
         public void DeleteConfirmedHasValidateAntiForgeryTokenAttribute()
-        {
-        }
+		{
+			var controller = new CampaignController(null, null);
+			var attribute = controller.GetAttributesOn(x => x.DeleteConfirmed(It.IsAny<int>())).OfType<ValidateAntiForgeryTokenAttribute>().SingleOrDefault();
+			Assert.NotNull(attribute);
+		}
 
         [Fact(Skip = "NotImplemented")]
         public async Task LockUnlockReturnsHttpUnauthorizedResultWhenUserIsNotSiteAdmin()
@@ -360,24 +376,33 @@ namespace AllReady.UnitTest.Areas.Admin.Controllers
             await taskFromResultZero;
         }
 
-        [Fact(Skip = "NotImplemented")]
+        [Fact]
         public async Task LockUnlockRedirectsToCorrectActionWithCorrectRouteValuesWhenUserIsSiteAdmin()
         {
-            //delete this line when starting work on this unit test
-            await taskFromResultZero;
+			var controller = CampaignControllerWithDetailQuery(UserType.SiteAdmin.ToString(), It.IsAny<int>());
+
+			var result = await controller.LockUnlock(It.IsAny<int>()) as RedirectToActionResult;
+			Assert.NotNull(result);
+			Assert.Equal(result.ActionName, nameof(CampaignController.Details));
         }
 
-        [Fact(Skip = "NotImplemented")]
+        [Fact]
         public void LockUnlockHasHttpPostAttribute()
-        {
-        }
+		{
+			var controller = new CampaignController(null, null);
+			var attribute = controller.GetAttributesOn(x => x.LockUnlock(It.IsAny<int>())).OfType<HttpPostAttribute>().SingleOrDefault();
+			Assert.NotNull(attribute);
+		}
 
-        [Fact(Skip = "NotImplemented")]
-        public void LockUnlockdHasValidateAntiForgeryTokenAttribute()
-        {
-        }
+	    [Fact]
+	    public void LockUnlockdHasValidateAntiForgeryTokenAttribute()
+	    {
+		    var controller = new CampaignController(null, null);
+		    var attribute = controller.GetAttributesOn(x => x.LockUnlock(It.IsAny<int>())).OfType<ValidateAntiForgeryTokenAttribute>().SingleOrDefault();
+		    Assert.NotNull(attribute);
+	    }
 
-        #region Helper Methods
+	    #region Helper Methods
         private static Mock<IMediator> MockMediatorCampaignDetailQuery(out CampaignController controller)
         {
             var mockMediator = new Mock<IMediator>();
